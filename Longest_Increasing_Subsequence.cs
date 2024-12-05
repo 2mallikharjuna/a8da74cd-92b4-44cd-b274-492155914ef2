@@ -22,40 +22,48 @@ namespace Longest_Increasing_Subsequence
                 throw new ArgumentException($"Fail to covert the Input string : {strElements}, please check the input once again");
             }
         }
+        
         /// <summary>
-        /// Find the first Longest Increasing Subsequence
+        /// Finds the first longest increasing subsequence in the input list.
         /// </summary>
-        /// <param name="elements">Input elements list</param>
-        /// <returns>return Earliest and Longest Increasing Subsequence</returns>
+        /// <param name="elements">Input list of integers.</param>
+        /// <returns>The earliest and longest increasing subsequence.</returns>
         private IEnumerable<int> FindLongestIncreasingSubsequence(IList<int> elements)
         {
+            if (elements == null || elements.Count == 0)
+                return Enumerable.Empty<int>(); // Return empty if input is null or empty.
+        
             List<int> longestSeq = new List<int>();
-            List<int> firstLongestSubSeq = new List<int>();           
-            
-            for (var i = 0; i < elements.Count; i++)
+            List<int> currentSeq = new List<int>();
+        
+            for (int i = 0; i < elements.Count; i++)
             {
-                //traverse the sequence until last element to find the longest sub-sequence
-                if (i != elements.Count - 1 && elements[i + 1] > elements[i])
+                // Add the current element to the current sequence
+                if (currentSeq.Count == 0 || elements[i] > currentSeq.Last())
                 {
-                    //Prepare sub sequence list
-                    if(longestSeq.Count == 0)
-                        longestSeq.Add(elements[i]);
-                    longestSeq.Add(elements[i+1]);   
+                    currentSeq.Add(elements[i]);
                 }
-                else 
+                else
                 {
-                    //New prepared sequence is having greater count than existing count
-                    if (firstLongestSubSeq.Count() < longestSeq.Count())
+                    // Check if the current sequence is the longest found so far
+                    if (currentSeq.Count > longestSeq.Count)
                     {
-                        firstLongestSubSeq.Clear();
-                        firstLongestSubSeq.AddRange(longestSeq);
+                        longestSeq = new List<int>(currentSeq);
                     }
-                    longestSeq.Clear();
-                }              
-                
+                    currentSeq.Clear();
+                    currentSeq.Add(elements[i]); // Start a new sequence with the current element
+                }
             }
-            return firstLongestSubSeq;    //return the highest sub sequence list
+        
+            // Check the last sequence
+            if (currentSeq.Count > longestSeq.Count)
+            {
+                longestSeq = new List<int>(currentSeq);
+            }
+        
+            return longestSeq;
         }
+
 
         static void Main(string[] args)
         {
